@@ -27,15 +27,15 @@ ${text}`;
     console.log('Making request to OpenAI API...');
     console.log('Text length:', text.length);
     
-    // Call OpenAI API with the latest available model
+    // Call OpenAI API with the gpt-4-32k model that has larger context window
     const chatCompletion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo-0125', // 최신 안정 버전의 모델
+      model: 'gpt-4-32k', // 변경: 더 큰 컨텍스트 길이(32k 토큰)를 지원하는 모델로 변경
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
       ],
       temperature: 0.7,
-      max_tokens: 2000,
+      max_tokens: 4000, // 응답 토큰 수를 증가
     });
 
     const result = chatCompletion.choices[0].message.content;
