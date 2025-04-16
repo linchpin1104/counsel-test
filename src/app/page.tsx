@@ -55,13 +55,20 @@ export default function Home() {
     setIsLoading(true);
     setSavedSuccess(false);
     try {
+      // 타임아웃 설정이 있는 fetch 함수
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2분 타임아웃
+      
       const response = await fetch('/api/process', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ text: transcriptText }),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId); // 타임아웃 제거
       
       if (!response.ok) {
         throw new Error('API 요청에 실패했습니다.');
@@ -71,7 +78,11 @@ export default function Home() {
       setProcessedText(data.result);
     } catch (error) {
       console.error('Error processing with GPT:', error);
-      alert('GPT 처리 중 오류가 발생했습니다.');
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        alert('요청 시간이 너무 오래 걸립니다. 텍스트가 너무 길지 않은지 확인해주세요.');
+      } else {
+        alert('GPT 처리 중 오류가 발생했습니다.');
+      }
     } finally {
       setIsLoading(false);
     }
