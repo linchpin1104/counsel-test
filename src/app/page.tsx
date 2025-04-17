@@ -121,7 +121,7 @@ export default function Home() {
   return (
     <main className="min-h-screen p-6 lg:p-24 bg-gray-50">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-10">심리상담 분석 도구</h1>
+        <h1 className="text-3xl font-bold text-center mb-10">상담노트 작성</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column: Upload and Input */}
@@ -196,7 +196,7 @@ export default function Home() {
               ) : (
                 <>
                   <Send className="mr-2 h-5 w-5" />
-                  GPT로 보내기
+                  상담노트 정리하기
                 </>
               )}
             </button>
@@ -204,7 +204,7 @@ export default function Home() {
           
           {/* Right Column: Results */}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">분석 결과</h2>
+            <h2 className="text-xl font-semibold mb-4">상담노트</h2>
             
             <div className="relative min-h-64 p-3 border border-gray-300 rounded-md bg-gray-50">
               {processedText ? (
@@ -212,7 +212,7 @@ export default function Home() {
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 text-gray-500">
                   <FileText className="h-12 w-12 mb-2" />
-                  <p>GPT 분석 결과가 여기에 표시됩니다.</p>
+                  <p>상담노트가 여기에 표시됩니다.</p>
                 </div>
               )}
             </div>
