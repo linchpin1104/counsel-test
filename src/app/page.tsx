@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { UploadCloud, FileText, Send, Save } from 'lucide-react';
+import { UploadCloud, FileText, Send, Save, Lock, KeyRound } from 'lucide-react';
 
 export default function Home() {
   const [transcriptText, setTranscriptText] = useState('');
@@ -11,6 +11,27 @@ export default function Home() {
   const [isSaving, setIsSaving] = useState(false);
   const [fileUploaded, setFileUploaded] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authCode, setAuthCode] = useState('');
+  const [authError, setAuthError] = useState(false);
+
+  // 브라우저 스토리지에서 인증 상태 확인
+  useEffect(() => {
+    const storedAuth = localStorage.getItem('counselingAppAuth');
+    if (storedAuth === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleAuthentication = () => {
+    if (authCode === '0925') {
+      setIsAuthenticated(true);
+      setAuthError(false);
+      localStorage.setItem('counselingAppAuth', 'true');
+    } else {
+      setAuthError(true);
+    }
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -117,6 +138,51 @@ export default function Home() {
       setIsSaving(false);
     }
   };
+
+  // 인증 화면 렌더링
+  if (!isAuthenticated) {
+    return (
+      <main className="min-h-screen p-6 lg:p-24 bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
+          <div className="flex flex-col items-center mb-6">
+            <Lock className="h-16 w-16 text-blue-600 mb-2" />
+            <h1 className="text-2xl font-bold text-center">상담노트 작성</h1>
+            <p className="text-gray-600 text-center mt-2">접근 인증이 필요합니다</p>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">인증번호 입력</label>
+            <div className="flex">
+              <input
+                type="password"
+                placeholder="인증번호를 입력하세요"
+                className={`w-full p-3 border ${authError ? 'border-red-500' : 'border-gray-300'} rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                value={authCode}
+                onChange={(e) => { 
+                  setAuthCode(e.target.value);
+                  setAuthError(false);
+                }}
+                onKeyDown={(e) => e.key === 'Enter' && handleAuthentication()}
+              />
+              <button 
+                className="bg-blue-600 text-white px-4 rounded-r-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onClick={handleAuthentication}
+              >
+                <KeyRound className="h-5 w-5" />
+              </button>
+            </div>
+            {authError && (
+              <p className="text-red-500 text-sm mt-1">인증번호가 올바르지 않습니다.</p>
+            )}
+          </div>
+          
+          <p className="text-xs text-gray-500 text-center mt-6">
+            인증된 사용자만 이 애플리케이션에 접근할 수 있습니다.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen p-6 lg:p-24 bg-gray-50">
