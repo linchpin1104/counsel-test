@@ -78,7 +78,7 @@ export default function Home() {
     try {
       // 타임아웃 설정이 있는 fetch 함수
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2분 타임아웃
+      const timeoutId = setTimeout(() => controller.abort(), 180000); // 3분 타임아웃으로 연장
       
       const response = await fetch('/api/process', {
         method: 'POST',
